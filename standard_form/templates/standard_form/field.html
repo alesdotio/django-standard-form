@@ -1,0 +1,19 @@
+{% load i18n standard_form %}
+{% if form_input_type == 'radiocheck' %}
+	<label class="empty">&nbsp;</label>
+	<div class="field">
+		<label>
+			{% standard_widget field=field use_placeholder=form_use_placeholder use_required=form_use_required input_type=form_input_type %}
+			{{ field.label }}{% if field.field.required %} <abbr title="{% trans 'required' %}">*</abbr>{% endif %}
+			{% if field.help_text %}<span class="text-help">{{ field.help_text }}</span> {% endif %}
+			{% for error in field.errors %}<span class="text-error">{{ error }}</span> {% endfor %}
+		</label>
+	</div>
+{% else %}
+	<label for="id_{{ field.html_name }}">{{ field.label }}{% if field.field.required %} <abbr title="{% trans 'required' %}">*</abbr>{% endif %}</label>
+	<div class="field">
+		{% standard_widget field=field use_placeholder=form_use_placeholder use_required=form_use_required input_type=form_input_type %}
+		{% if field.help_text %}<span class="text-help">{{ field.help_text }}</span> {% endif %}
+		{% for error in field.errors %}<span class="text-error">{{ error }}</span> {% endfor %}
+	</div>
+{% endif %}
