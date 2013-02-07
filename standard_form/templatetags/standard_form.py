@@ -52,7 +52,9 @@ class StandardWidget(Tag):
         placeholder = placeholder.get('placeholder')
         input_type = input_type.get('input_type')
         custom_class = custom_class.get('custom_class')
-        custom_classes = custom_class.split(' ')
+        custom_classes = None
+        if custom_class:
+            custom_classes = custom_class.split(' ')
         attrs = {}
         if placeholder:
             attrs['placeholder'] = placeholder
