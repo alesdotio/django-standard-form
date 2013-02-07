@@ -26,9 +26,10 @@ def booleanify(arg):
 def get_options(args):
     options = dict()
     if args:
+        args = args.split(' ')
         options = {
             'placeholder_from_label': 'placeholder_from_label' in args,
-            'dont_use_required': 'dont_use_required' in args,
+            'no_required': 'no_required' in args,
             'no_required_helper': 'no_required_helper' in args,
             'no_help_text': 'no_help_text' in args,
             'no_error_text': 'no_error_text' in args,
@@ -41,22 +42,23 @@ class StandardWidget(Tag):
     options = Options(
         Argument('field'),
         Argument('options', required=False, default=None),
+        KeywordArgument('custom_class', required=False, default=None),
         KeywordArgument('placeholder', required=False, default=None),
         KeywordArgument('input_type', required=False, default=None),
-        KeywordArgument('custom_class', required=False, default=None),
     )
 
-    def render_tag(self, context, field, options, placeholder, input_type, custom_class):
+    def render_tag(self, context, field, options, custom_class, placeholder, input_type):
         args = get_options(options)
         placeholder = placeholder.get('placeholder')
         input_type = input_type.get('input_type')
         custom_class = custom_class.get('custom_class')
+        custom_classes = custom_class.split(' ')
         attrs = {}
         if placeholder:
             attrs['placeholder'] = placeholder
         elif args.get('placeholder_from_label', False):
             attrs['placeholder'] = field.label
-        if not args.get('dont_use_required', False) and field.field.required:
+        if not args.get('no_required', False) and field.field.required:
             attrs['required'] = 'required'
 
         if field.field.show_hidden_initial:
@@ -68,10 +70,12 @@ class StandardWidget(Tag):
 
         # set the classes
         classes = ['input-%s' % input_type]
+        if input_type == 'radiocheck' and 'input-block' in custom_classes:
+            custom_classes.remove('input-block')
         if field.errors:
             classes += ['input-error']
-        if custom_class:
-            classes += [custom_class]
+        if custom_classes:
+            classes += custom_classes
         attrs['class'] = ' '.join(classes)
 
         return field.as_widget(attrs=attrs)
@@ -84,16 +88,20 @@ class StandardField(Tag):
     options = Options(
         Argument('field'),
         Argument('options', required=False, default=None),
-        KeywordArgument('placeholder', required=False, default=None),
-        KeywordArgument('input_type', required=False, default=None),
         KeywordArgument('custom_class', required=False, default=None),
+        KeywordArgument('placeholder', required=False, default=None),
+        KeywordArgument('label', required=False, default=None),
+        KeywordArgument('input_type', required=False, default=None),
         'using',
         Argument('template', required=False, default='standard_form/field.html'),
     )
 
-    def render_tag(self, context, field, options, placeholder, input_type, custom_class, template):
+    def render_tag(self, context, field, options, custom_class, placeholder, label, input_type, template):
         placeholder = placeholder.get('placeholder')
         custom_class = custom_class.get('custom_class')
+        label = label.get('label')
+        if label:
+            field.label = label
         if input_type:
             input_type = input_type.get('input_type')
         else:
@@ -105,9 +113,9 @@ class StandardField(Tag):
             'no_required_helper': args.get('no_required_helper', False),
             'no_help_text': args.get('no_help_text', False),
             'no_error_text': args.get('no_error_text', False),
+            'custom_class': custom_class,
             'placeholder': placeholder,
             'input_type': input_type,
-            'custom_class': custom_class,
         }
         output = render_to_string(template, ctx)
         return output
@@ -120,14 +128,17 @@ class StandardForm(Tag):
     options = Options(
         Argument('form'),
         Argument('options', required=False, default=None),
+        KeywordArgument('custom_class', required=False, default=None),
         'using',
         Argument('template', required=False, default='standard_form/form.html'),
     )
 
-    def render_tag(self, context, form, options, template):
+    def render_tag(self, context, form, options, custom_class, template):
+        custom_class = custom_class.get('custom_class')
         ctx = {
             'form': form,
             'options': options,
+            'custom_class': custom_class,
         }
         output = render_to_string(template, ctx)
         return output

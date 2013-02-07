@@ -1,4 +1,4 @@
 {% load standard_form %}
 {% include 'standard_form/non_field_errors.html' %}
-<ol>{% for field in form.visible_fields %}<li>{% standard_field field options %}</li>{% endfor %}</ol>
+<ol>{% for field in form.visible_fields %}<li>{% standard_field field options custom_class=custom_class %}</li>{% endfor %}</ol>
 {% for hidden in form.hidden_fields %}{{ hidden }}{% endfor %}
