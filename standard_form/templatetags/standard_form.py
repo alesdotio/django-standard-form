@@ -77,8 +77,17 @@ class StandardWidget(Tag):
         if input_type == 'radiocheck-list':
             input_class = 'radiocheck'
         classes = ['input-%s' % input_class]
-        if 'radiocheck' in input_type and 'input-block' in custom_classes:
-            custom_classes.remove('input-block')
+        if 'radiocheck' in input_type:
+            if 'input-mini' in custom_classes:
+                custom_classes.remove('input-mini')
+            if 'input-small' in custom_classes:
+                custom_classes.remove('input-small')
+            if 'input-medium' in custom_classes:
+                custom_classes.remove('input-medium')
+            if 'input-large' in custom_classes:
+                custom_classes.remove('input-large')
+            if 'input-block' in custom_classes:
+                custom_classes.remove('input-block')
         if field.errors:
             classes += ['input-error']
         if custom_classes:
