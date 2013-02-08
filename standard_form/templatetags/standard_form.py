@@ -11,6 +11,8 @@ def get_input_type(widget_type):
         input_type = 'text'
     elif widget_type == Select or widget_type == SelectMultiple:
         input_type = 'select'
+    elif widget_type == CheckboxSelectMultiple or widget_type == RadioSelect:
+        input_type = 'radiocheck-list'
     elif widget_type == CheckboxSelectMultiple or widget_type == CheckboxInput or widget_type == RadioSelect:
         input_type = 'radiocheck'
     else:
@@ -71,8 +73,11 @@ class StandardWidget(Tag):
             input_type = get_input_type(type(field.field.widget))
 
         # set the classes
-        classes = ['input-%s' % input_type]
-        if input_type == 'radiocheck' and 'input-block' in custom_classes:
+        input_class = input_type
+        if input_type == 'radiocheck-list':
+            input_class = 'radiocheck'
+        classes = ['input-%s' % input_class]
+        if 'radiocheck' in input_type and 'input-block' in custom_classes:
             custom_classes.remove('input-block')
         if field.errors:
             classes += ['input-error']
@@ -108,6 +113,9 @@ class StandardField(Tag):
             input_type = input_type.get('input_type')
         else:
             input_type = get_input_type(type(field.field.widget))
+        field_classes = ''
+        if input_type == 'radiocheck-list':
+            field_classes = 'radiocheck-list'
         args = get_options(options)
         ctx = {
             'field': field,
@@ -118,6 +126,7 @@ class StandardField(Tag):
             'custom_class': custom_class,
             'placeholder': placeholder,
             'input_type': input_type,
+            'field_classes': field_classes,
         }
         output = render_to_string(template, ctx)
         return output
