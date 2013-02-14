@@ -35,6 +35,8 @@ def get_options(args):
             'no_required_helper': 'no_required_helper' in args,
             'no_help_text': 'no_help_text' in args,
             'no_error_text': 'no_error_text' in args,
+            'readonly': 'readonly' in args,
+            'disabled': 'disabled' in args,
         }
     return options
 
@@ -64,6 +66,10 @@ class StandardWidget(Tag):
             attrs['placeholder'] = field.label
         if not args.get('no_required', False) and field.field.required:
             attrs['required'] = 'required'
+        if args.get('readonly', False):
+            attrs['readonly'] = 'readonly'
+        if args.get('disabled', False):
+            attrs['disabled'] = 'disabled'
 
         if field.field.show_hidden_initial:
             return field.as_widget(attrs=attrs) + field.as_hidden(only_initial=True)
