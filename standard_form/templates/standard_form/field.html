@@ -3,17 +3,17 @@
 	<label class="empty">&nbsp;</label>
 	<div class="field">
 		<label>
+			{% if not no_error_text %}{% for error in field.errors %}<span class="text-error">{{ error }}</span> {% endfor %}{% endif %}
 			{% standard_widget field options custom_class=custom_class placeholder=placeholder input_type=input_type %}
 			{{ field.label }}{% if not no_required_helper and field.field.required %}<abbr title="{% trans 'required' %}">*</abbr>{% endif %}
 			{% if not no_help_text and field.help_text %}<span class="text-info">{{ field.help_text }}</span> {% endif %}
-			{% if not no_error_text %}{% for error in field.errors %}<span class="text-error">{{ error }}</span> {% endfor %}{% endif %}
 		</label>
 	</div>
 {% else %}
 	<label for="id_{{ field.html_name }}">{{ field.label }}{% if not no_required_helper and field.field.required %}<abbr title="{% trans 'required' %}">*</abbr>{% endif %}</label>
 	<div class="field {{ field_classes }}">
+		{% if not no_error_text %}{% for error in field.errors %}<span class="text-error">{{ error }}</span> {% endfor %}{% endif %}
 		{% standard_widget field options custom_class=custom_class placeholder=placeholder input_type=input_type %}
 		{% if not no_help_text and field.help_text %}<span class="text-info">{{ field.help_text }}</span> {% endif %}
-		{% if not no_error_text %}{% for error in field.errors %}<span class="text-error">{{ error }}</span> {% endfor %}{% endif %}
 	</div>
 {% endif %}
