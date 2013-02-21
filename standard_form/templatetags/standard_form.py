@@ -35,6 +35,7 @@ def get_options(args):
             'no_required_helper': 'no_required_helper' in args,
             'no_help_text': 'no_help_text' in args,
             'no_error_text': 'no_error_text' in args,
+            'no_label': 'no_label' in args,
             'readonly': 'readonly' in args,
             'disabled': 'disabled' in args,
         }
@@ -138,6 +139,7 @@ class StandardField(Tag):
             'no_required_helper': args.get('no_required_helper', False),
             'no_help_text': args.get('no_help_text', False),
             'no_error_text': args.get('no_error_text', False),
+            'no_label': args.get('no_label', False),
             'custom_class': custom_class,
             'placeholder': placeholder,
             'input_type': input_type,

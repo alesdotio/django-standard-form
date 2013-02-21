@@ -1,6 +1,6 @@
 {% load i18n standard_form %}
 {% if input_type == 'radiocheck' %}
-	<label class="empty">&nbsp;</label>
+	{% if not no_label %}<label class="empty">&nbsp;</label>{% endif %}
 	<div class="field">
 		<label>
 			{% if not no_error_text %}{% for error in field.errors %}<span class="text-error">{{ error }}</span> {% endfor %}{% endif %}
@@ -10,7 +10,7 @@
 		</label>
 	</div>
 {% else %}
-	<label for="id_{{ field.html_name }}">{{ field.label }}{% if not no_required_helper and field.field.required %}<abbr title="{% trans 'required' %}">*</abbr>{% endif %}</label>
+	<label for="id_{{ field.html_name }}">{% if not no_label %}{{ field.label }}{% endif %}{% if not no_required_helper and field.field.required %}<abbr title="{% trans 'required' %}">*</abbr>{% endif %}</label>
 	<div class="field {{ field_classes }}">
 		{% if not no_error_text %}{% for error in field.errors %}<span class="text-error">{{ error }}</span> {% endfor %}{% endif %}
 		{% standard_widget field options custom_class=custom_class placeholder=placeholder input_type=input_type %}
