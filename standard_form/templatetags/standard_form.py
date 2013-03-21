@@ -1,5 +1,6 @@
 from classytags.arguments import Argument, KeywordArgument, Flag
 from classytags.core import Tag, Options
+from classytags.helpers import InclusionTag
 from django import template
 from django.forms import TextInput, Select, CheckboxSelectMultiple, SelectMultiple, CheckboxInput, RadioSelect
 from django.template.loader import render_to_string
@@ -172,4 +173,11 @@ class StandardForm(Tag):
         return output
 
 register.tag(StandardForm)
+
+
+class StandardSubmit(InclusionTag):
+    name = 'standard_submit'
+    template = 'standard_form/submit.html'
+
+register.tag(StandardSubmit)
 
