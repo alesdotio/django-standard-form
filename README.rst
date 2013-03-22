@@ -22,7 +22,7 @@ Usage
 
     {% load standard_form %}
     
-    <form action="." method="post" class="frm">
+    <form action="" method="post" class="frm">
         {% csrf_token %}
         <fieldset class="frm-horizontal">
             {% standard_form form %}
@@ -36,7 +36,7 @@ Usage
 ::
 
 
-    <form action="." method="post" class="frm">
+    <form action="" method="post" class="frm">
         {% csrf_token %}
         <fieldset class="frm-horizontal">
             <ol>
@@ -56,7 +56,7 @@ Usage
 
 ::
 
-    <form action="." method="post" class="frm">
+    <form action="" method="post" class="frm">
         {% csrf_token %}
         <fieldset class="frm-horizontal">
             <ol>
