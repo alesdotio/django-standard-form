@@ -1,30 +1,34 @@
-from classytags.arguments import Argument, KeywordArgument, Flag
+from classytags.arguments import Argument, KeywordArgument
 from classytags.core import Tag, Options
 from classytags.helpers import InclusionTag
 from django import template
-from django.forms import TextInput, Select, CheckboxSelectMultiple, SelectMultiple, CheckboxInput, RadioSelect
+from django.forms import (Select, CheckboxSelectMultiple, Textarea, RadioSelect,
+                          SelectMultiple, CheckboxInput, MultiWidget)
 from django.template.loader import render_to_string
 
 register = template.Library()
 
+
 def get_input_type(widget_type):
-    if widget_type == TextInput:
-        input_type = 'text'
-    elif widget_type == Select or widget_type == SelectMultiple:
-        input_type = 'select'
-    elif widget_type == CheckboxSelectMultiple or widget_type == RadioSelect:
-        input_type = 'radiocheck-list'
-    elif widget_type == CheckboxSelectMultiple or widget_type == CheckboxInput or widget_type == RadioSelect:
-        input_type = 'radiocheck'
-    else:
-        input_type = 'text'
-    return input_type
+    if widget_type in [Select, SelectMultiple]:
+        return 'select'
+    if widget_type in [CheckboxSelectMultiple, RadioSelect]:
+        return 'radiocheck-list'
+    if widget_type is Textarea:
+        return 'textarea'
+    if widget_type is CheckboxInput:
+        return 'radiocheck'
+    if issubclass(widget_type, MultiWidget):
+        return 'multi'
+    return 'text'
+
 
 def booleanify(arg):
     if arg is True or arg.lower() == 'yes' or arg.lower() == 'true' or arg.lower() == 'on':
         return True
     if arg is False or arg.lower() == 'no' or arg.lower() == 'false' or arg.lower() == 'off':
         return False
+
 
 def get_options(args):
     options = dict()
@@ -80,10 +84,16 @@ class StandardWidget(Tag):
         if not input_type:
             input_type = get_input_type(type(field.field.widget))
 
+        # multi field has many widgets we don't want to replace attrs in all
+        if input_type == 'multi':
+            return field.as_widget()
+
         # set the classes
         input_class = input_type
         if input_type == 'radiocheck-list':
             input_class = 'radiocheck'
+
+        # TODO: we have to get classes from widget in first place
         classes = ['input-%s' % input_class]
         if 'radiocheck' in input_type:
             if 'input-mini' in custom_classes:
@@ -180,4 +190,3 @@ class StandardSubmit(InclusionTag):
     template = 'standard_form/submit.html'
 
 register.tag(StandardSubmit)
-
